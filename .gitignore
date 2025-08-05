@@ -1,0 +1,184 @@
+# ================================
+# DATOS SENSIBLES Y PERSONALES
+# ================================
+
+# Environment variables (contienen API keys y configuración sensible)
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.staging
+*.env
+
+# Archivos CSV de LinkedIn (datos personales)
+Connections.csv
+Connections-*.csv
+*connections*.csv
+*linkedin*.csv
+
+# Resultados de búsqueda (emails encontrados - información sensible)
+email_search_results.csv
+*results*.csv
+*emails*.csv
+*search*.csv
+
+# Archivos de progreso (pueden contener nombres y empresas)
+search_progress.json
+*.progress.json
+progress_*.json
+
+# Backups de datos sensibles
+*.backup
+*.bak
+*backup*
+
+# ================================
+# DEPENDENCIAS Y CACHÉ
+# ================================
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Optional npm cache directory
+.npm
+.yarn/
+.pnp
+.pnp.js
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# ================================
+# ARCHIVOS DEL SISTEMA
+# ================================
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ================================
+# IDEs Y EDITORES
+# ================================
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+
+# ================================
+# LOGS Y ARCHIVOS TEMPORALES
+# ================================
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# ================================
+# ARCHIVOS DE CONFIGURACIÓN LOCALES
+# ================================
+
+# Local configuration files
+config.local.js
+config.local.json
+*.local.json
+*.local.js
+
+# User-specific files
+.user
+*.user
+.personal
+*.personal
+
+# ================================
+# ARCHIVOS DE TESTING Y DEBUG
+# ================================
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Debug files
+*.debug
+debug.log
+.debug/
+
+# ================================
+# OTROS ARCHIVOS SENSIBLES
+# ================================
+
+# Keys and certificates
+*.key
+*.pem
+*.crt
+*.cer
+*.p12
+*.pfx
+*.keystore
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Compressed files with potential sensitive data
+*.zip
+*.rar
+*.7z
+*.tar.gz
+
+# Archivos con credenciales
+credentials.json
+auth.json
+secrets.json
+keys.json 

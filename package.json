@@ -1,0 +1,30 @@
+{
+  "name": "linkedin-email-finder",
+  "version": "1.0.0",
+  "description": "Script para buscar emails de contactos de LinkedIn usando AI",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "demo": "node test-progress.js",
+    "check": "node setup-check.js",
+    "test": "node index.js -n 3",
+    "sample": "node index.js -n 5",
+    "resume": "node index.js --resume",
+    "reset": "node index.js --reset",
+    "test-resume": "node index.js -n 3 --resume",
+    "sample-resume": "node index.js -n 5 --resume",
+    "help": "node index.js --help"
+  },
+  "keywords": ["linkedin", "email", "finder", "ai", "openai"],
+  "author": "Ezequiel",
+  "license": "MIT",
+  "dependencies": {
+    "openai": "^4.67.1",
+    "csv-parser": "^3.0.0",
+    "csv-writer": "^1.6.0",
+    "cli-progress": "^3.12.0",
+    "dotenv": "^16.4.5",
+    "axios": "^1.7.7"
+  }
+} 
