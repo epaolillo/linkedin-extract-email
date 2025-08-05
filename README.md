@@ -10,7 +10,8 @@ Script en Node.js para buscar emails de contactos de LinkedIn usando OpenAI con 
 - 📊 Barra de progreso en tiempo real
 - 🔧 Configuración flexible mediante variables de entorno
 - 📈 Procesamiento por lotes con límites de velocidad
-- 💾 Exportación de resultados a CSV
+- 💾 **Guardado automático incremental** - Cada resultado se guarda inmediatamente
+- 🛡️ **Protección contra pérdidas** - Si se interrumpe, ya tienes todo lo procesado
 - 🎯 Filtrado automático de conexiones sin email
 
 ## 📋 Requisitos
@@ -189,6 +190,7 @@ npm run resume
 3. **Validación**: Se valida y extrae el email con nivel de confianza
 4. **Guardado**: Se almacenan todos los datos incluyendo resultados de búsqueda
 5. **🆕 Progreso**: Se guarda progreso automáticamente cada 5 búsquedas
+6. **🆕 Guardado incremental**: Cada resultado se escribe inmediatamente al CSV
 
 ## 📝 Notas importantes
 
@@ -198,6 +200,8 @@ npm run resume
 - 💰 Cada búsqueda consume tokens de OpenAI (revisa tu límite de API)
 - 🎯 Procesa únicamente conexiones que no tienen email
 - 🌐 Requiere conexión a internet para búsquedas web
+- 🛡️ **Guardado automático**: Los resultados se guardan inmediatamente, no al final
+- 🔄 **Resistente a interrupciones**: Si se corta el script, no pierdes nada
 
 ## 🛟 Solución de problemas
 

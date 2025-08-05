@@ -611,6 +611,17 @@ class LinkedInEmailFinder {
         const currentSession = [];
         const startTime = progress.startTime || new Date().toISOString();
         
+        // Check if we need to write CSV headers (first time or file doesn't exist)
+        const csvExists = this.csvFileExists();
+        const isFirstSession = !resume || !csvExists;
+        let isFirstResult = isFirstSession;
+        
+        if (isFirstSession && total > 0) {
+            console.log('📝 Iniciando archivo CSV con headers...');
+        } else if (resume && csvExists) {
+            console.log('📝 Continuando en archivo CSV existente...');
+        }
+        
         // Initialize progress bar
         this.progressBar.start(total, 0, {
             status: 'Iniciando búsqueda...'
@@ -637,6 +648,12 @@ class LinkedInEmailFinder {
                 currentSession.push(result);
                 results.push(result);
                 
+                // 🆕 GUARDADO INCREMENTAL - Guarda inmediatamente al CSV
+                await this.saveResultIncremental(result, isFirstResult);
+                if (isFirstResult) {
+                    isFirstResult = false; // Solo la primera vez escribe headers
+                }
+                
                 // Add to processed names
                 const connectionKey = this.generateConnectionKey(
                     connection['Full Name'], 
@@ -644,11 +661,16 @@ class LinkedInEmailFinder {
                 );
                 progress.processedNames.add(connectionKey);
                 
-                // Save progress every 5 results or every 2 minutes
+                // Save progress every 5 results or at the end
                 if (currentSession.length % 5 === 0 || 
                     (currentSession.length > 0 && globalIndex === total - 1)) {
                     this.saveProgress(progress.processedNames, results, startTime);
                 }
+                
+                // Update progress with save confirmation
+                this.progressBar.update(globalIndex + 1, {
+                    status: `💾 Guardado: ${connection['Full Name'] || connection['First Name'] + ' ' + connection['Last Name']}`
+                });
                 
                 // Rate limiting delay
                 if (globalIndex < total - 1) {
@@ -659,7 +681,7 @@ class LinkedInEmailFinder {
             // Update progress after batch
             const processed = Math.min(i + this.batchSize, total);
             this.progressBar.update(processed, {
-                status: `Completado: ${processed}/${total}`
+                status: `Completado: ${processed}/${total} (CSV actualizado)`
             });
         }
         
@@ -672,6 +694,8 @@ class LinkedInEmailFinder {
         if (resume && progress.results.length > currentSession.length) {
             console.log(`   📊 Total acumulado: ${results.length} búsquedas (${results.length - currentSession.length} anteriores + ${currentSession.length} nuevas)`);
         }
+        console.log(`\n💾 Todos los resultados ya están guardados en ${this.outputFile}`);
+        console.log(`   🔄 Si el script se interrumpió, todos los resultados procesados están preservados`);
         
         return results;
     }
@@ -710,6 +734,53 @@ class LinkedInEmailFinder {
             
         } catch (error) {
             console.error('❌ Error guardando resultados:', error.message);
+        }
+    }
+    
+    /**
+     * Save a single result incrementally to CSV
+     * @param {Object} result - Single search result
+     * @param {boolean} isFirstResult - Whether this is the first result (write headers)
+     * @returns {Promise<void>}
+     */
+    async saveResultIncremental(result, isFirstResult = false) {
+        try {
+            const csvWriter = createCsvWriter({
+                path: this.outputFile,
+                header: [
+                    { id: 'name', title: 'Name' },
+                    { id: 'company', title: 'Company' },
+                    { id: 'position', title: 'Position' },
+                    { id: 'email', title: 'Email' },
+                    { id: 'source', title: 'Source' },
+                    { id: 'confidence', title: 'Confidence' },
+                    { id: 'query', title: 'Query' },
+                    { id: 'response', title: 'AI Response' },
+                    { id: 'searchResults', title: 'Web Search Results' }
+                ],
+                append: !isFirstResult
+            });
+            
+            await csvWriter.writeRecords([result]);
+            
+        } catch (error) {
+            console.error('⚠️ Error guardando resultado incremental:', error.message);
+        }
+    }
+    
+    /**
+     * Check if CSV file exists and has content
+     * @returns {boolean} True if file exists and has content
+     */
+    csvFileExists() {
+        try {
+            if (fs.existsSync(this.outputFile)) {
+                const stats = fs.statSync(this.outputFile);
+                return stats.size > 0;
+            }
+            return false;
+        } catch (error) {
+            return false;
         }
     }
     
@@ -842,8 +913,7 @@ async function main() {
         const results = await finder.processConnections(connections, options.sampleSize, options.resume);
         
         if (results.length > 0) {
-            // Save results
-            await finder.saveResults(results);
+            // Results are already saved incrementally, no need to save again
             
             // Print summary
             const emailsFound = results.filter(r => r.email && r.email.length > 0).length;
@@ -856,6 +926,8 @@ async function main() {
             console.log(`   Búsquedas con fuentes: ${sourcesFound}`);
             console.log(`   Resultados de alta confianza: ${highConfidence}`);
             console.log(`   Tasa de éxito: ${((emailsFound / results.length) * 100).toFixed(1)}%`);
+            console.log(`\n📁 Archivo de resultados: ${finder.outputFile}`);
+            console.log(`   💡 Los resultados se guardaron automáticamente durante el procesamiento`);
         } else {
             console.log('✅ No hay conexiones para procesar');
         }
